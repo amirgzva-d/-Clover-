@@ -192,7 +192,7 @@ function resolveBackendErrorMsg(data, status) {
 
 function normalizeVoicePreviewLanguage(rawLanguage) {
     const current = String(rawLanguage || '').trim().toLowerCase();
-    if (!current || current === 'auto') return 'zh-CN';
+    if (!current || current === 'auto') return 'fa';
     if (current === 'tchinese' || current.startsWith('zh-tw') || current.startsWith('zh-hk') || current.includes('hant')) return 'zh-TW';
     if (current === 'schinese' || current.startsWith('zh')) return 'zh-CN';
     if (current === 'english' || current.startsWith('en')) return 'en';
@@ -201,6 +201,7 @@ function normalizeVoicePreviewLanguage(rawLanguage) {
     if (current === 'russian' || current.startsWith('ru')) return 'ru';
     if (current === 'spanish' || current === 'latam' || current.startsWith('es')) return 'es';
     if (current === 'portuguese' || current === 'brazilian' || current.startsWith('pt')) return 'pt';
+    if (current === 'persian' || current === 'farsi' || current === 'fa' || current.startsWith('fa-') || current.startsWith('fa_')) return 'fa';
     return 'en';
 }
 
@@ -264,7 +265,7 @@ function getVoicePreviewLanguage() {
             return normalizeVoicePreviewLanguage(candidate);
         }
     }
-    return 'zh-CN';
+    return 'fa';
 }
 
 function appendVoiceApplyStatus(resultDiv, message, className = '') {

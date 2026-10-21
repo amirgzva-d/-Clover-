@@ -352,7 +352,10 @@ def cosyvoice_vc_tts_worker(request_queue, response_queue, audio_api_key, voice_
             # expiry instead of falsely completing the new round.
             callback=_SynthCallback(callback, synth_generation),
         )
-        if lang_hint and cosyvoice_model_supports_language_hints(clone_model):
+        # Only the pre-existing Japanese hint is known to be accepted by
+        # CosyVoice here. Do not forward a Persian hint unsupported by the
+        # selected clone model; preserve server-side language detection.
+        if lang_hint == "ja" and cosyvoice_model_supports_language_hints(clone_model):
             kwargs["language_hints"] = [lang_hint]
         callback.construct_start_time = time.time()
         # Hold DASHSCOPE_GLOBAL_LOCK while writing module globals and constructing SpeechSynthesizer;

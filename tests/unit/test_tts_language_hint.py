@@ -124,3 +124,30 @@ class TestStepTtsCreateBuilder:
             is_lanlan_app=True,
         )
         assert data["language_code"] == "ko-KR"
+
+
+class TestPersianVoiceHints:
+    def test_persian_letters_use_existing_tts_hint_path(self):
+        assert detect_tts_language_hint("سلام، خوبی؟") == "fa"
+        assert detect_tts_language_hint("یک جمله فارسی برای گفت‌وگو") == "fa"
+
+    def test_other_language_hints_are_preserved(self):
+        assert detect_tts_language_hint("سلام") is None  # ambiguous shared Arabic letters
+        assert detect_tts_language_hint("Hello, how are you?") is None
+        assert detect_tts_language_hint("こんにちは") == "ja"
+
+    def test_global_persian_uses_fa_ir_tts_code(self, monkeypatch):
+        monkeypatch.setattr("utils.language_utils.get_global_language_full", lambda: "fa-IR")
+        assert _get_tts_language_code() == "fa-IR"
+
+    def test_persian_text_uses_existing_gemini_proxy_language_field(self, monkeypatch):
+        monkeypatch.setattr("utils.language_utils.get_global_language_full", lambda: "zh-CN")
+        data = _build_step_tts_create_data("s1", "v1", "fa", True)
+        assert data["language_code"] == "fa-IR"
+        assert data["voice_id"] == "v1"
+        assert "voice_label" not in data
+
+    def test_persian_hint_does_not_invent_stepfun_voice_label(self):
+        data = _build_step_tts_create_data("s1", "v1", "fa", False)
+        assert "voice_label" not in data
+        assert "language_code" not in data

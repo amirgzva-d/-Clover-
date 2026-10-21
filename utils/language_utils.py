@@ -1325,21 +1325,26 @@ PORTUGUESE_STRONG_PATTERN = re.compile(r'[ãÃõÕ]')
 # languages to server autodetection, usually Chinese/English/Korean/Cantonese, because Japanese
 # is easily misclassified without enough context.
 _TTS_KANA_RE = re.compile(r'[\u3040-\u309f\u30a0-\u30ff]')
+# Persian orthography has distinctive letters; avoid treating all Arabic script as
+# Persian, which would misclassify Arabic/Urdu voices. The selected fa locale
+# remains available as a hint even for sentences with shared Arabic letters.
+_TTS_PERSIAN_RE = re.compile(r'[\u067e\u0686\u0698\u06af\u06cc\u06a9]')
 TTS_LANG_DETECT_MIN_CHARS = 6
 
 
 def detect_tts_language_hint(text: str) -> Optional[str]:
-    """Scan the text; returns 'ja' on kana hits, otherwise None (leaving auto-detection to the server).
+    """Return a conservative language hint for a TTS text chunk.
 
-    The return value is a provider-agnostic language code ('ja'). Each TTS provider
-    worker maps the code to its own field:
-      - CosyVoice: language_hints=["ja"]
-      - Qwen:      session.language_type="Japanese"
-      - lanlan.tech (step free): voice_label={"language": "日语"}
-      - lanlan.app (step free):  language_code="ja-JP"
-    """  # noqa: DOCSTRING_CJK
+    Kana is Japanese; distinctive Persian-script letters identify Persian.
+    The receiving TTS worker must opt in to hints its provider accepts:
+    CosyVoice/Qwen still receive only their existing Japanese hint, while the
+    existing lanlan.app Gemini proxy accepts a BCP-47 language_code.
+    Other scripts are left to provider auto-detection.
+    """
     if text and _TTS_KANA_RE.search(text):
         return 'ja'
+    if text and _TTS_PERSIAN_RE.search(text):
+        return 'fa'
     return None
 
 
@@ -1352,6 +1357,7 @@ TTS_LANGUAGE_CODE_MAP = {
     'zh-TW': 'cmn-tw',
     'en':    'en-US',
     'ja':    'ja-JP',
+    'fa':    'fa-IR',
     'ko':    'ko-KR',
     'pt':    'pt-BR',
     'es':    'es-ES',

@@ -121,7 +121,14 @@ def _build_step_tts_create_data(sid_: str, voice_id: str, lang_hint, is_lanlan_a
     if is_lanlan_app:
         # Send actual voice_id already present in data; www.lanlan.app forwards it to
         # Gemini and maps it, without forcing Leda on the client.
-        data["language_code"] = "ja-JP" if lang_hint == "ja" else _get_tts_language_code()
+        # Forward Persian to the existing Gemini-proxy voice pipeline instead
+        # of silently treating its text as Mandarin. Other providers retain
+        # their original session/voice semantics.
+        data["language_code"] = (
+            "ja-JP" if lang_hint == "ja"
+            else "fa-IR" if lang_hint == "fa"
+            else _get_tts_language_code()
+        )
     else:
         # lanlan.tech free and standard StepFun currently both accept voice_label.
         if lang_hint == "ja":

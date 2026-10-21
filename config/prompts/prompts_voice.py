@@ -23,6 +23,7 @@ VOICE_PREVIEW_TEXTS = {
     "ru": "Мяу-мяу-мяу~ Это Линь Юуи. Очень рада знакомству~",
     "es": "Miau, miau, miau~ Soy Lin Youyi. Me alegra conocerte~",
     "pt": "Miau, miau, miau~ Eu sou Lin Youyi. Prazer em conhecer você~",
+    "fa": "میو میو! من لین یویی هستم. خیلی خوشحالم که باهات آشنا شدم!",
 }
 
 
