@@ -14,6 +14,9 @@
         <el-dropdown-item command="zh-TW" :disabled="isApplied('zh-TW')">
           <span>🇹🇼 繁體中文</span>
         </el-dropdown-item>
+        <el-dropdown-item command="fa" :disabled="isApplied('fa')">
+          <span>🇮🇷 فارسی</span>
+        </el-dropdown-item>
         <el-dropdown-item command="en-US" :disabled="isApplied('en-US')">
           <span>🇺🇸 English</span>
         </el-dropdown-item>
@@ -52,7 +55,8 @@ const LOCALE_SHORT_LABELS: Record<AppLocale, string> = {
   'ko': 'KR',
   'ru': 'RU',
   'es': 'ES',
-  'pt': 'PT'
+  'pt': 'PT',
+  'fa': 'FA'
 }
 
 const displayLabel = computed(() => LOCALE_SHORT_LABELS[getLocale()])

@@ -12,6 +12,13 @@ const loaders = {
     ])
     return { messages: m.default, element: e.default }
   }),
+  fa: retryableModule(async (): Promise<Bundle> => {
+    const [m, e] = await Promise.all([
+      import('./locales/fa'),
+      import('element-plus/es/locale/lang/fa.mjs'),
+    ])
+    return { messages: m.default, element: e.default }
+  }),
   'en-US': retryableModule(async (): Promise<Bundle> => {
     const [m, e] = await Promise.all([
       import('./locales/en-US'),

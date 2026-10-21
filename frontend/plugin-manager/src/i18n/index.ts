@@ -6,7 +6,7 @@ import zhCnElement from 'element-plus/dist/locale/zh-cn.mjs'
 import { loadLocaleBundle } from './localeBundles'
 import { OptionalModuleError } from '@/utils/retryableModule'
 
-export const SUPPORTED_LOCALES = ['zh-CN', 'zh-TW', 'en-US', 'ja', 'ko', 'ru', 'es', 'pt'] as const
+export const SUPPORTED_LOCALES = ['zh-CN', 'zh-TW', 'en-US', 'ja', 'ko', 'ru', 'es', 'pt', 'fa'] as const
 export type AppLocale = (typeof SUPPORTED_LOCALES)[number]
 export type LocaleSetting = AppLocale | 'auto'
 const DEFAULT_LOCALE: AppLocale = 'zh-CN'
@@ -18,6 +18,7 @@ export function resolveLocaleFromBrowser(): AppLocale {
     if (SUPPORTED_LOCALES.includes(lang as AppLocale)) return lang as AppLocale
     const langCode = lang.split('-')[0]?.toLowerCase() ?? ''
     if (langCode === 'en') return 'en-US'
+    if (langCode === 'fa') return 'fa'
     if (['ja', 'ko', 'ru', 'es', 'pt'].includes(langCode)) return langCode as AppLocale
     if (langCode === 'zh') {
       const upper = lang.toUpperCase()
@@ -97,6 +98,7 @@ async function applySetting(setting: LocaleSetting, persist: boolean): Promise<b
     i18n.global.locale.value = target
     appliedSetting.value = setting
     document.documentElement.lang = target
+    document.documentElement.dir = target === 'fa' ? 'rtl' : 'ltr'
     if (persist) {
       try {
         localStorage.setItem('locale', setting)

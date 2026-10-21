@@ -125,7 +125,7 @@ def _matches_lang_code(lang_lower: str, code: str, aliases: Optional[set] = None
     )
 
 
-_SUPPORTED_LANGUAGE_CODES: tuple = ('zh', 'en', 'ja', 'ko', 'ru', 'es', 'pt')
+_SUPPORTED_LANGUAGE_CODES: tuple = ('zh', 'en', 'ja', 'ko', 'ru', 'es', 'pt', 'fa')
 _SUPPORTED_STEAM_LITERALS: frozenset = frozenset({
     'schinese', 'tchinese', 'english', 'japanese',
     'koreana', 'korean', 'russian', 'spanish', 'latam',
@@ -138,6 +138,8 @@ _LEGACY_SYSTEM_LANGUAGE_NAMES = {
     'russian': 'ru',
     'spanish': 'es',
     'portuguese': 'pt',
+    'persian': 'fa',
+    'farsi': 'fa',
     'chinese': 'zh',
     'chinese (simplified)': 'zh',
     'simplified chinese': 'zh',
@@ -1184,6 +1186,8 @@ def normalize_language_code(lang: str, format: str = 'short') -> str:
         return 'es'
     elif _matches_lang_code(lang_lower, 'pt', {'portuguese', 'brazilian'}):
         return 'pt'
+    elif _matches_lang_code(lang_lower, 'fa', {'persian', 'farsi'}):
+        return 'fa'
     elif lang_lower.startswith('en'):
         return 'en'
     else:
@@ -2018,7 +2022,7 @@ async def get_user_language_async() -> str:
 
 # Cache configuration.
 CACHE_MAX_SIZE = 1000
-SUPPORTED_LANGUAGES = ['zh', 'zh-CN', 'en', 'ja', 'ko', 'ru', 'es', 'pt']
+SUPPORTED_LANGUAGES = ['zh', 'zh-CN', 'en', 'ja', 'ko', 'ru', 'es', 'pt', 'fa']
 DEFAULT_LANGUAGE = 'en'
 
 class TranslationService:

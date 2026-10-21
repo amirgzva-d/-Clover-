@@ -26,11 +26,19 @@
     window.i18nInitialized = true;
 
     // 支持的语言列表
-    const SUPPORTED_LANGUAGES = ['zh-CN', 'zh-TW', 'en', 'ja', 'ko', 'ru', 'es', 'pt'];
+    const SUPPORTED_LANGUAGES = ['zh-CN', 'zh-TW', 'en', 'ja', 'ko', 'ru', 'es', 'pt', 'fa'];
 
     // locale 资源版本（用于 cache-busting，避免客户端长期缓存旧语言包导致新增 key 不生效）
     // Molili 归档导入（PR #3447）新增角色名超长提示文案，刷新八语言客户端缓存。
-    const LOCALE_VERSION = '2026-10-18-pr3447-partial-day-notes';
+    const LOCALE_VERSION = '2026-10-21-clover-fa-menu-v1';
+    // Keep URLs, source code, and numerical IDs readable in Farsi.
+    if (!document.getElementById('neko-fa-text-direction')) {
+        const style = document.createElement('style');
+        style.id = 'neko-fa-text-direction';
+        style.textContent = "html[dir='rtl'] pre, html[dir='rtl'] code, html[dir='rtl'] input[type='url'], html[dir='rtl'] input[type='email'], html[dir='rtl'] input[type='number'], html[dir='rtl'] .monaco-editor { direction: ltr; text-align: left; unicode-bidi: isolate; }";
+        document.head.appendChild(style);
+    }
+
     function initDecorativeImageDragGuard() {
         const markImage = (img) => {
             if (!(img instanceof HTMLImageElement)) return;
@@ -107,6 +115,7 @@
         if (langCode === 'ru') return 'ru';
         if (langCode === 'es') return 'es';
         if (langCode === 'pt') return 'pt';
+        if (langCode === 'fa') return 'fa';
         if (langCode === 'zh') {
             if (/(tw|hk|hant)/i.test(value)) {
                 return 'zh-TW';
@@ -131,7 +140,8 @@
         Object.freeze({ code: 'ko', label: '한국어' }),
         Object.freeze({ code: 'ru', label: 'Русский' }),
         Object.freeze({ code: 'es', label: 'Español' }),
-        Object.freeze({ code: 'pt', label: 'Português' })
+        Object.freeze({ code: 'pt', label: 'Português' }),
+        Object.freeze({ code: 'fa', label: 'فارسی' })
     ]);
 
     function resolveConversationLanguageCharacterName(characterName) {
@@ -725,6 +735,7 @@
                 console.log('[i18n] ✅ 初始化成功（手动加载模式）');
                 // 设置 HTML lang 属性，用于 CSS 语言特定样式
                 document.documentElement.lang = i18next.language;
+                document.documentElement.dir = i18next.language === 'fa' ? 'rtl' : 'ltr';
                 exportNormalFunctions();
                 updatePageTexts();
                 window.dispatchEvent(new CustomEvent('localechange'));
@@ -834,6 +845,7 @@
                         initialized = true;
                         // 设置 HTML lang 属性，用于 CSS 语言特定样式
                         document.documentElement.lang = i18next.language;
+                document.documentElement.dir = i18next.language === 'fa' ? 'rtl' : 'ltr';
                         exportNormalFunctions();
                         updatePageTexts();
                         window.dispatchEvent(new CustomEvent('localechange'));
@@ -943,6 +955,7 @@
             localStorage.setItem('i18nextLng', lng);
             // 更新 HTML lang 属性，用于 CSS 语言特定样式
             document.documentElement.lang = lng;
+            document.documentElement.dir = lng === 'fa' ? 'rtl' : 'ltr';
             updatePageTexts();
             updateLive2DDynamicTexts();
             window.dispatchEvent(new CustomEvent('localechange'));

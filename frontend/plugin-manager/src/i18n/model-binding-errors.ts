@@ -1,5 +1,6 @@
 export const modelBindingErrors = {
   'en-US': { conflict: 'This binding changed elsewhere. Refresh and review it before trying again.', unknown: 'The result is not confirmed. Refresh to confirm it before making another change.', failed: 'The change could not be completed. Review the current binding before trying again.', version: 'Refresh this page before changing the binding.' },
+  fa: { conflict: "این الزام در جای دیگری تغییر کرد. قبل از تلاش مجدد، آن را بازخوانی و مرور کنید.", unknown: "نتیجه تایید نشده است. قبل از ایجاد تغییر دیگری، برای تأیید آن، آن را بازخوانی کنید.", failed: "تغییر کامل نشد. قبل از تلاش مجدد، اتصال فعلی را مرور کنید.", version: "قبل از تغییر صحافی، این صفحه را بازخوانی کنید." },
   'zh-CN': { conflict: '绑定已被其他操作更改，请刷新并确认后重试。', unknown: '操作结果尚未确认，请刷新确认后再进行修改。', failed: '操作未能完成，请确认当前绑定后重试。', version: '请刷新页面后再修改绑定。' },
   'zh-TW': { conflict: '綁定已被其他操作變更，請重新整理並確認後再試。', unknown: '操作結果尚未確認，請重新整理確認後再修改。', failed: '操作未能完成，請確認目前綁定後再試。', version: '請重新整理頁面後再修改綁定。' },
   ja: { conflict: '別の操作で割り当てが変更されました。更新して確認してから再試行してください。', unknown: '操作結果は未確認です。更新して確認してから変更してください。', failed: '操作を完了できませんでした。現在の割り当てを確認して再試行してください。', version: 'ページを更新してから割り当てを変更してください。' },

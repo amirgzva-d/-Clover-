@@ -250,7 +250,7 @@ def _iter_theater_rendered_history(history: list, *, lang: str, name: str, maste
 
 
 class RepetitionInsightsRequest(BaseModel):
-    language: Literal["en", "es", "pt", "ru", "ja", "ko", "zh-CN", "zh-TW"]
+    language: Literal["en", "es", "pt", "ru", "ja", "ko", "zh-CN", "zh-TW", "fa"]
     assistant_message_limit: int = Field(default=100, ge=3, le=100)
 
 
