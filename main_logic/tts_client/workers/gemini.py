@@ -24,8 +24,24 @@ from utils.tts.providers.gemini import GEMINI_TTS_MODEL, normalize_gemini_tts_vo
 from .._infra import _resample_audio, _run_sentence_tts_worker
 from .._telemetry import _record_tts_telemetry
 from utils.logger_config import get_module_logger
+from utils.language_utils import detect_tts_language_hint
 
 logger = get_module_logger(__name__, "Main")
+
+
+def _gemini_tts_speech_prompt(text: str) -> str:
+    """Use Gemini's existing synthesis method with an explicit Persian cue."""
+    if detect_tts_language_hint(text) == "fa":
+        return (
+            "Speak this text naturally in Iranian Persian (Farsi). "
+            "Do not translate, omit, or add any words:\n"
+            f'\"{text}\"'
+        )
+    return (
+        "Say the text with a proper tone, "
+        f"don't omit or add any words:\n\"{text}\""
+    )
+
 
 def gemini_tts_worker(request_queue, response_queue, audio_api_key, voice_id):
     """Gemini TTS worker — per-sentence synthesis, direct async httpx connection."""
@@ -66,10 +82,7 @@ def gemini_tts_worker(request_queue, response_queue, audio_api_key, voice_id):
             logger.warning(f"Gemini TTS TLS 预热失败（不影响后续使用）: {e}")
 
         async def synthesize(text: str, speech_id: str) -> None:
-            wrapped = (
-                "Say the text with a proper tone, "
-                f"don't omit or add any words:\n\"{text}\""
-            )
+            wrapped = _gemini_tts_speech_prompt(text)
             payload = {
                 "contents": [{"parts": [{"text": wrapped}]}],
                 "generationConfig": {

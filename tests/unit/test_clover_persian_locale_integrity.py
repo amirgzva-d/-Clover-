@@ -89,3 +89,40 @@ def test_persian_is_primary_html_language_on_first_render():
     for relative in ('templates/index.html', 'frontend/plugin-manager/index.html'):
         html = (ROOT / relative).read_text(encoding="utf-8")
         assert '<html lang="fa" dir="rtl">' in html
+
+
+def test_persian_voice_preview_template_uses_existing_locale_registry():
+    from config.prompts.prompts_voice import VOICE_PREVIEW_TEXTS
+    from utils.voice_preview_text import normalize_voice_preview_language
+    assert "fa" in VOICE_PREVIEW_TEXTS
+    assert "میو" in VOICE_PREVIEW_TEXTS["fa"]
+    assert normalize_voice_preview_language("fa-IR") == "fa"
+    assert normalize_voice_preview_language("farsi") == "fa"
+    assert normalize_voice_preview_language("en-US") == "en"
+    assert normalize_voice_preview_language("zh-TW") == "zh-TW"
+
+
+def test_persian_voice_preview_ui_uses_same_existing_route():
+    js = (ROOT / "static/js/voice_clone.js").read_text(encoding="utf8")
+    assert "current === 'persian' || current === 'farsi'" in js
+    assert "getVoicePreviewLanguage()" in js
+    assert "encodeURIComponent(previewLanguage)" in js
+
+
+def test_persian_asr_policy_matches_existing_provider_support():
+    whisper = (ROOT / "main_logic/asr_client/workers/faster_whisper.py").read_text(encoding="utf8")
+    qwen = (ROOT / "main_logic/asr_client/workers/qwen.py").read_text(encoding="utf8")
+    step = (ROOT / "main_logic/asr_client/workers/step.py").read_text(encoding="utf8")
+    assert '"fa"' in whisper
+    assert '"fa"' not in qwen.split("_QWEN_SUPPORTED_LANGUAGES", 1)[1].split("_ItemKey", 1)[0]
+    assert '_STEP_SUPPORTED_LANGUAGES = frozenset({"en", "zh"})' in step
+
+
+def test_gemini_tts_has_native_persian_speech_prompt():
+    from main_logic.tts_client.workers.gemini import _gemini_tts_speech_prompt
+    fa = _gemini_tts_speech_prompt("سلام، خوبی؟")
+    en = _gemini_tts_speech_prompt("Hello there")
+    assert "Iranian Persian" in fa
+    assert "سلام، خوبی؟" in fa
+    assert "Iranian Persian" not in en
+    assert "Hello there" in en

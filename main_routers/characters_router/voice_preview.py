@@ -82,7 +82,7 @@ _normalize_voice_preview_language = normalize_voice_preview_language
 
 
 def _get_voice_preview_language(request: Request, language: object = None, i18n_language: object = None) -> str:
-    """Pick the preview text by the frontend i18n language; defaults to the legacy Chinese preview."""
+    """Pick the preview text by the frontend i18n language; default to Clover Persian."""
     for candidate in (language, i18n_language):
         normalized = _normalize_voice_preview_language(candidate)
         if normalized:
@@ -95,7 +95,7 @@ def _get_voice_preview_language(request: Request, language: object = None, i18n_
             if normalized:
                 return normalized
 
-    return "zh-CN"
+    return "fa"
 
 
 def _is_free_preset_voice_id(voice_id: object) -> bool:
