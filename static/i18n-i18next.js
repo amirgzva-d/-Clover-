@@ -27,10 +27,12 @@
 
     // 支持的语言列表
     const SUPPORTED_LANGUAGES = ['zh-CN', 'zh-TW', 'en', 'ja', 'ko', 'ru', 'es', 'pt', 'fa'];
+    // Clover default applies only without an explicit UI preference.
+    const DEFAULT_UI_LANGUAGE = 'fa';
 
     // locale 资源版本（用于 cache-busting，避免客户端长期缓存旧语言包导致新增 key 不生效）
     // Molili 归档导入（PR #3447）新增角色名超长提示文案，刷新八语言客户端缓存。
-    const LOCALE_VERSION = '2026-10-21-clover-fa-menu-v1';
+    const LOCALE_VERSION = '2026-10-21-clover-fa-default-v2';
     // Keep URLs, source code, and numerical IDs readable in Farsi.
     if (!document.getElementById('neko-fa-text-direction')) {
         const style = document.createElement('style');
@@ -352,17 +354,9 @@
             return savedLanguage;
         }
 
-        // 2. 检查浏览器语言设置
-        const browserLanguage = navigator.language || navigator.userLanguage;
-        if (browserLanguage) {
-            const normalized = normalizeSupportedLanguageCode(browserLanguage);
-            if (normalized) {
-                return normalized;
-            }
-        }
-
-        // 3. 默认返回中文
-        return 'zh-CN';
+        // Fresh Clover installations default to Persian rather than
+        // silently inheriting the browser/system/Steam language.
+        return DEFAULT_UI_LANGUAGE;
     }
 
     // 从后端获取语言设置（异步）：同一请求携带手工 UI 覆盖和 Steam 语言
@@ -408,7 +402,7 @@
     // 服务端 uiLanguage 强制覆盖；生效时本窗口不跟随其他窗口写入的 i18nextLng。
     let serverUiLanguageOverride = null;
 
-    // 获取初始语言：uiLanguage 强制覆盖 > URL 参数 > Steam 设置 > localStorage / 浏览器设置 > 默认中文
+    // Initial UI language: explicit server override > URL > saved selection > Clover Persian default.
     async function getInitialLanguage() {
         const serverLanguages = await getServerLanguagePreferences();
         serverUiLanguageOverride = serverLanguages.uiLanguage || null;
@@ -422,19 +416,17 @@
             return queryLanguage;
         }
 
-        // 1. 尝试从 Steam API 获取语言
-        if (serverLanguages.steamLanguage) {
-            // 保存到 localStorage，下次可以直接使用
-            localStorage.setItem('i18nextLng', serverLanguages.steamLanguage);
-            return serverLanguages.steamLanguage;
-        }
-
-        // 2. 回退到浏览器语言
+        // Steam and the browser are automatic signals, not explicit UI choices.
+        // Do not override the Clover Persian default with either of them.
+        // Existing manual choices in i18nextLng remain respected.
         return getBrowserLanguage();
     }
 
     // 先使用同步方式获取初始语言（用于快速显示）
     let INITIAL_LANGUAGE = getBrowserLanguage();
+    // Apply initial direction immediately, before asynchronous translations.
+    document.documentElement.lang = INITIAL_LANGUAGE;
+    document.documentElement.dir = INITIAL_LANGUAGE === 'fa' ? 'rtl' : 'ltr';
 
     // ==================== CDN 动态加载 ====================
 
@@ -716,7 +708,7 @@
             // 初始化 i18next
             i18next.init({
                 lng: INITIAL_LANGUAGE,
-                fallbackLng: 'zh-CN', // 默认回退到中文
+                fallbackLng: ['fa', 'en', 'zh-CN'], // Clover default Persian; keep robust fallback bundles
                 supportedLngs: SUPPORTED_LANGUAGES,
                 ns: ['translation'],
                 defaultNS: 'translation',
@@ -807,7 +799,7 @@
                 .use(i18nextHttpBackend)
                 .init({
                     lng: INITIAL_LANGUAGE,
-                    fallbackLng: 'zh-CN', // 默认回退到中文
+                    fallbackLng: ['fa', 'en', 'zh-CN'], // Clover default Persian; keep robust fallback bundles
                     supportedLngs: SUPPORTED_LANGUAGES,
                     ns: ['translation'],
                     defaultNS: 'translation',
@@ -849,7 +841,7 @@
                         initialized = true;
                         // 设置 HTML lang 属性，用于 CSS 语言特定样式
                         document.documentElement.lang = i18next.language;
-                document.documentElement.dir = i18next.language === 'fa' ? 'rtl' : 'ltr';
+                        document.documentElement.dir = i18next.language === 'fa' ? 'rtl' : 'ltr';
                         exportNormalFunctions();
                         updatePageTexts();
                         window.dispatchEvent(new CustomEvent('localechange'));

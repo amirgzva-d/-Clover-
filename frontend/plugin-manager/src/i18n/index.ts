@@ -2,6 +2,8 @@
 import { createI18n } from 'vue-i18n'
 import { reactive, ref, shallowRef } from 'vue'
 import zhCN from './locales/zh-CN'
+import fa from './locales/fa'
+import faElement from 'element-plus/es/locale/lang/fa.mjs'
 import zhCnElement from 'element-plus/dist/locale/zh-cn.mjs'
 import { loadLocaleBundle } from './localeBundles'
 import { OptionalModuleError } from '@/utils/retryableModule'
@@ -9,7 +11,7 @@ import { OptionalModuleError } from '@/utils/retryableModule'
 export const SUPPORTED_LOCALES = ['zh-CN', 'zh-TW', 'en-US', 'ja', 'ko', 'ru', 'es', 'pt', 'fa'] as const
 export type AppLocale = (typeof SUPPORTED_LOCALES)[number]
 export type LocaleSetting = AppLocale | 'auto'
-const DEFAULT_LOCALE: AppLocale = 'zh-CN'
+const DEFAULT_LOCALE: AppLocale = 'fa'
 
 export function resolveLocaleFromBrowser(): AppLocale {
   const languages = navigator.languages?.length ? navigator.languages : [navigator.language]
@@ -38,7 +40,8 @@ export function resolveLocaleFromBrowser(): AppLocale {
 function readSetting(): LocaleSetting {
   try {
     const raw = localStorage.getItem('locale')
-    if (raw === null || raw === 'auto') return 'auto'
+    if (raw === null) return DEFAULT_LOCALE
+    if (raw === 'auto') return 'auto'
     return SUPPORTED_LOCALES.includes(raw as AppLocale) ? (raw as AppLocale) : DEFAULT_LOCALE
   } catch {
     return 'auto'
@@ -59,7 +62,7 @@ function takeReloadRetry(): LocaleSetting | null {
 const reloadRetry = takeReloadRetry()
 const initialSetting = reloadRetry ?? readSetting()
 const appliedSetting = ref<LocaleSetting>(DEFAULT_LOCALE)
-export const elementLocale = shallowRef(zhCnElement)
+export const elementLocale = shallowRef(faElement)
 export const localeLoadState = reactive<{
   pending: LocaleSetting | null
   error: string | null
@@ -71,7 +74,7 @@ export const i18n = createI18n({
   legacy: false,
   locale: DEFAULT_LOCALE as string,
   fallbackLocale: DEFAULT_LOCALE,
-  messages: { 'zh-CN': zhCN } as Record<string, typeof zhCN>,
+  messages: { fa, 'zh-CN': zhCN } as Record<string, typeof zhCN>,
 })
 let generation = 0
 let initialized = false
@@ -88,8 +91,10 @@ async function applySetting(setting: LocaleSetting, persist: boolean): Promise<b
   try {
     const bundle =
       target === DEFAULT_LOCALE
-        ? { messages: zhCN, element: zhCnElement }
-        : await loadLocaleBundle(target as Exclude<AppLocale, 'zh-CN'>)
+        ? { messages: fa, element: faElement }
+        : target === 'zh-CN'
+          ? { messages: zhCN, element: zhCnElement }
+          : await loadLocaleBundle(target as Exclude<AppLocale, 'zh-CN' | 'fa'>)
     if (seq !== generation) return false
     // One synchronous commit. No visible locale changes before BOTH app and
     // Element dictionaries are ready; Vue batches their reactive consumers.

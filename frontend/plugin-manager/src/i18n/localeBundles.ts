@@ -12,13 +12,6 @@ const loaders = {
     ])
     return { messages: m.default, element: e.default }
   }),
-  fa: retryableModule(async (): Promise<Bundle> => {
-    const [m, e] = await Promise.all([
-      import('./locales/fa'),
-      import('element-plus/es/locale/lang/fa.mjs'),
-    ])
-    return { messages: m.default, element: e.default }
-  }),
   'en-US': retryableModule(async (): Promise<Bundle> => {
     const [m, e] = await Promise.all([
       import('./locales/en-US'),
@@ -62,6 +55,6 @@ const loaders = {
     return { messages: m.default, element: e.default }
   }),
 }
-export function loadLocaleBundle(locale: Exclude<AppLocale, 'zh-CN'>) {
+export function loadLocaleBundle(locale: Exclude<AppLocale, 'zh-CN' | 'fa'>) {
   return loaders[locale]()
 }

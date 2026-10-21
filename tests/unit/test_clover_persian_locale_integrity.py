@@ -68,4 +68,24 @@ def test_persian_plugin_manager_is_a_first_class_locale():
     bundle = (root / "i18n/localeBundles.ts").read_text(encoding="utf-8")
     assert "'fa'] as const" in index
     assert 'command="fa"' in switcher
-    assert "import('./locales/fa')" in bundle
+    assert "import fa from './locales/fa'" in index
+    assert "import faElement from 'element-plus/es/locale/lang/fa.mjs'" in index
+    assert "const DEFAULT_LOCALE: AppLocale = 'fa'" in index
+    assert "if (raw === null) return DEFAULT_LOCALE" in index
+    assert "fa: retryableModule" not in bundle
+
+
+def test_main_app_defaults_to_persian_without_overriding_manual_preference():
+    js = (ROOT / "static/i18n-i18next.js").read_text(encoding="utf-8")
+    assert "const DEFAULT_UI_LANGUAGE = 'fa'" in js
+    assert "return DEFAULT_UI_LANGUAGE;" in js
+    assert "fallbackLng: ['fa', 'en', 'zh-CN']" in js
+    assert "savedLanguage = localStorage.getItem('i18nextLng')" in js
+    assert "if (serverLanguages.uiLanguage)" in js
+    assert "// Steam and the browser are automatic signals" in js
+
+
+def test_persian_is_primary_html_language_on_first_render():
+    for relative in ('templates/index.html', 'frontend/plugin-manager/index.html'):
+        html = (ROOT / relative).read_text(encoding="utf-8")
+        assert '<html lang="fa" dir="rtl">' in html
