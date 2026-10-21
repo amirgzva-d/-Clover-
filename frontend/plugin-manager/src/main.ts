@@ -1,4 +1,5 @@
 import './assets/main.css'
+import './assets/fa-direction.css'
 
 import { createApp, watch } from 'vue'
 import { createPinia } from 'pinia'

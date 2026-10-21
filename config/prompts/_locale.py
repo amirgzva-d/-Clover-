@@ -63,13 +63,13 @@ does.
 
 from typing import Any
 
-# The runtime locale set, matching static/locales/ and the eight-locale i18n
+# The runtime locale set, matching static/locales/ and the nine-locale i18n
 # rule in docs/contributing/developer-notes.md.
-NEKO_CORE_LOCALES = ("zh-CN", "zh-TW", "en", "ja", "ko", "ru", "es", "pt")
+NEKO_CORE_LOCALES = ("zh-CN", "zh-TW", "en", "ja", "ko", "ru", "es", "pt", "fa")
 
 # Non-Chinese locales, matched exactly or as a `<locale>-<region>` prefix.
 # Exact matching is what keeps "esperanto" from being read as Spanish.
-_SIMPLE_LOCALES = ("en", "ja", "ko", "ru", "es", "pt")
+_SIMPLE_LOCALES = ("en", "ja", "ko", "ru", "es", "pt", "fa")
 
 # Markers that pick the Traditional branch out of a zh-* tag.
 _TRADITIONAL_MARKERS = ("tw", "hk", "hant")
@@ -88,6 +88,9 @@ _LANGUAGE_ALIASES = {
     "latam": "es",
     "portuguese": "pt",
     "brazilian": "pt",
+    "persian": "fa",
+    "farsi": "fa",
+    "fa-ir": "fa",
     # Chinese spellings.
     "zh": "zh-CN",
     "zh-cn": "zh-CN",
@@ -138,7 +141,7 @@ def normalize_prompt_locale(
         if raw.startswith("zh"):
             # Note: this also catches unrelated tags that merely begin with
             # "zh" (e.g. "zhuang"). Harmless for now — the runtime language set
-            # is the eight NEKO_CORE_LOCALES, none of which collide.
+            # is the nine NEKO_CORE_LOCALES, none of which collide.
             resolved = (
                 "zh-TW"
                 if any(marker in raw for marker in _TRADITIONAL_MARKERS)

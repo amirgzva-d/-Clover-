@@ -77,7 +77,7 @@ AVATAR_RESOLVER_INPUTS = {"", None}
 
 # input -> (minigame, traditional_aware, badminton)
 EXPECTED = {
-    # The eight runtime locales.
+    # The nine runtime locales.
     "en": ("en", "en", "en"),
     "ja": ("ja", "ja", "ja"),
     "ko": ("ko", "ko", "ko"),
@@ -86,6 +86,10 @@ EXPECTED = {
     "ru": ("ru", "ru", "ru"),
     "pt": ("pt", "pt", "pt"),
     "es": ("es", "es", "es"),
+    "fa": ("fa", "fa", "fa"),
+    "fa-IR": ("fa", "fa", "fa"),
+    "farsi": ("fa", "fa", "fa"),
+    "persian": ("fa", "fa", "fa"),
     # Short Chinese and its spellings.
     "zh": ("zh", "zh", "zh-CN"),
     "zh-Hant": ("zh-TW", "zh-TW", "zh-TW"),
@@ -269,7 +273,7 @@ def test_default_only_applies_to_empty_input():
 
 
 def test_every_core_locale_round_trips():
-    """Each of the eight runtime locales resolves to itself under full keys."""
+    """Each of the nine runtime locales resolves to itself under full keys."""
     for locale in NEKO_CORE_LOCALES:
         got = normalize_prompt_locale(
             locale, simplified="zh-CN", keep_traditional=True
@@ -277,7 +281,7 @@ def test_every_core_locale_round_trips():
         assert got == locale, f"{locale!r} -> {got!r}"
 
 
-LOCALE_PREFIXES = {"zh", "en", "ja", "ko", "ru", "es", "pt"}
+LOCALE_PREFIXES = {"zh", "en", "ja", "ko", "ru", "es", "pt", "fa"}
 
 
 def _is_locale_prefix_literal(value: str) -> bool:

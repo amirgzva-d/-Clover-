@@ -271,7 +271,7 @@
 
     const normalizeSoccerExplicitLanguage = (value) => {
       const language = String(value || '').trim();
-      return ['zh-CN', 'zh-TW', 'en', 'ja', 'ko', 'ru', 'es', 'pt'].includes(language)
+      return ['zh-CN', 'zh-TW', 'en', 'ja', 'ko', 'ru', 'es', 'pt', 'fa'].includes(language)
         ? language
         : '';
     };

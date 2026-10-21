@@ -37,6 +37,10 @@
         style.id = 'neko-fa-text-direction';
         style.textContent = "html[dir='rtl'] pre, html[dir='rtl'] code, html[dir='rtl'] input[type='url'], html[dir='rtl'] input[type='email'], html[dir='rtl'] input[type='number'], html[dir='rtl'] .monaco-editor { direction: ltr; text-align: left; unicode-bidi: isolate; }";
         document.head.appendChild(style);
+        const css = document.createElement('link');
+        css.rel = 'stylesheet';
+        css.href = '/static/css/fa-direction.css';
+        document.head.appendChild(css);
     }
 
     function initDecorativeImageDragGuard() {

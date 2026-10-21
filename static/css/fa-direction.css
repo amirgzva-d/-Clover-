@@ -1,0 +1,12 @@
+/* N.E.K.O Persian interface: text direction only. Preserve avatar layout. */
+html[lang="fa"] :is(input, textarea, select) { text-align: start; }
+html[lang="fa"] :is(input[type="email"], input[type="url"], input[type="number"], input[type="tel"],
+  input[type="password"], pre, code, kbd, samp, .monaco-editor, .cm-editor) {
+  direction: ltr;
+  text-align: left;
+  unicode-bidi: isolate;
+}
+html[lang="fa"] :is([data-technical-value], [data-path], [data-testid*="code"]) {
+  unicode-bidi: isolate;
+}
+html[lang="fa"] :is(.fa-numeric, .fa-filepath) { direction: ltr; unicode-bidi: isolate; }

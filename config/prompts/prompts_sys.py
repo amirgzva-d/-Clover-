@@ -81,7 +81,7 @@ RESULT_PARSER_ERROR_CODES = {
     'AGENT_QUOTA_EXCEEDED': {
         'zh': '配额已用完', 'zh-TW': '配額已用完', 'en': 'Quota exceeded',
         'ja': 'クォータ超過', 'ko': '할당량 초과', 'ru': 'Квота исчерпана',
-        'es': 'Cuota agotada', 'pt': 'Cota esgotada',
+        'es': 'Cuota agotada', 'pt': 'Cota esgotada', 'fa': 'سهمیه به پایان رسیده است',
     },
 }
 
@@ -90,27 +90,27 @@ RESULT_PARSER_ERROR_SUBSTRINGS = {
     'Task cancelled by user': {
         'zh': '被用户取消', 'zh-TW': '被使用者取消', 'en': 'Cancelled by user',
         'ja': 'ユーザーによりキャンセル', 'ko': '사용자가 취소함', 'ru': 'Отменено пользователем',
-        'es': 'Cancelado por el usuario', 'pt': 'Cancelado pelo usuário',
+        'es': 'Cancelado por el usuario', 'pt': 'Cancelado pelo usuário', 'fa': 'توسط کاربر لغو شد',
     },
     'timed out after': {
         'zh': '超时', 'zh-TW': '逾時', 'en': 'Timed out',
         'ja': 'タイムアウト', 'ko': '시간 초과', 'ru': 'Превышено время ожидания',
-        'es': 'Tiempo agotado', 'pt': 'Tempo esgotado',
+        'es': 'Tiempo agotado', 'pt': 'Tempo esgotado', 'fa': 'مهلت به پایان رسید',
     },
     'Browser disconnected': {
         'zh': '浏览器窗口被关闭', 'zh-TW': '瀏覽器視窗被關閉', 'en': 'Browser window closed',
         'ja': 'ブラウザが切断されました', 'ko': '브라우저 연결 끊김', 'ru': 'Браузер отключён',
-        'es': 'Ventana del navegador cerrada', 'pt': 'Janela do navegador fechada',
+        'es': 'Ventana del navegador cerrada', 'pt': 'Janela do navegador fechada', 'fa': 'پنجره مرورگر بسته شد',
     },
     'CONTENT_FILTER': {
         'zh': '内容安全过滤', 'zh-TW': '內容安全過濾', 'en': 'Content filtered',
         'ja': 'コンテンツフィルター', 'ko': '콘텐츠 필터링', 'ru': 'Фильтр контента',
-        'es': 'Contenido filtrado', 'pt': 'Conteúdo filtrado',
+        'es': 'Contenido filtrado', 'pt': 'Conteúdo filtrado', 'fa': 'محتوا پالایش شد',
     },
     'browser-use execution failed': {
         'zh': '浏览器执行失败', 'zh-TW': '瀏覽器執行失敗', 'en': 'Browser execution failed',
         'ja': 'ブラウザ実行失敗', 'ko': '브라우저 실행 실패', 'ru': 'Ошибка выполнения браузера',
-        'es': 'Falló la ejecución del navegador', 'pt': 'Falha na execução do navegador',
+        'es': 'Falló la ejecución del navegador', 'pt': 'Falha na execução do navegador', 'fa': 'اجرای مرورگر ناموفق بود',
     },
     '未找到 Chrome': {
         'zh': '未找到 Chrome 浏览器', 'zh-TW': '找不到 Chrome 瀏覽器', 'en': 'Chrome browser not found',
@@ -138,7 +138,7 @@ RESULT_PARSER_PHRASES = {
     # Detail labels for agent callbacks injected into LLM context.
     # Outer SYSTEM_NOTIFICATION_PROACTIVE / PASSIVE expresses completed/failed/canceled status;
     # inner items need only optional detail labels.
-    'detail_result':      {'zh': '详细结果：', 'zh-TW': '詳細結果：', 'en': 'Detailed result: ', 'ja': '詳細結果：', 'ko': '상세 결과：', 'ru': 'Подробный результат: ', 'es': 'Resultado detallado: ', 'pt': 'Resultado detalhado: '},
+    'detail_result':      {"fa": "?????? ?????: ", 'zh': '详细结果：', 'zh-TW': '詳細結果：', 'en': 'Detailed result: ', 'ja': '詳細結果：', 'ko': '상세 결과：', 'ru': 'Подробный результат: ', 'es': 'Resultado detallado: ', 'pt': 'Resultado detalhado: '},
     'cu_task_done':       {'zh': '你的任务"{desc}"{status}：{detail}', 'zh-TW': '你的任務「{desc}」{status}：{detail}', 'en': 'Your task "{desc}" {status}: {detail}', 'ja': 'タスク「{desc}」{status}：{detail}', 'ko': '작업 "{desc}" {status}: {detail}', 'ru': 'Ваша задача «{desc}» {status}: {detail}', 'es': 'Tu tarea "{desc}" {status}: {detail}', 'pt': 'Sua tarefa "{desc}" {status}: {detail}'},
     'cu_task_done_no_desc': {'zh': '你的任务{status}：{detail}', 'zh-TW': '你的任務{status}：{detail}', 'en': 'Your task {status}: {detail}', 'ja': 'タスク{status}：{detail}', 'ko': '작업 {status}: {detail}', 'ru': 'Ваша задача {status}: {detail}', 'es': 'Tu tarea {status}: {detail}', 'pt': 'Sua tarefa {status}: {detail}'},
     'cu_task_desc_only':  {'zh': '你的任务"{desc}"{status}', 'zh-TW': '你的任務「{desc}」{status}', 'en': 'Your task "{desc}" {status}', 'ja': 'タスク「{desc}」{status}', 'ko': '작업 "{desc}" {status}', 'ru': 'Ваша задача «{desc}» {status}', 'es': 'Tu tarea "{desc}" {status}', 'pt': 'Sua tarefa "{desc}" {status}'},

@@ -129,7 +129,7 @@ _SUPPORTED_LANGUAGE_CODES: tuple = ('zh', 'en', 'ja', 'ko', 'ru', 'es', 'pt', 'f
 _SUPPORTED_STEAM_LITERALS: frozenset = frozenset({
     'schinese', 'tchinese', 'english', 'japanese',
     'koreana', 'korean', 'russian', 'spanish', 'latam',
-    'portuguese', 'brazilian',
+    'portuguese', 'brazilian', 'persian', 'farsi',
 })
 _LEGACY_SYSTEM_LANGUAGE_NAMES = {
     'english': 'en',

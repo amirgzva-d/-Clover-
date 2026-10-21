@@ -1,7 +1,7 @@
 (function () {
     'use strict';
 
-    const SUPPORTED_LOCALES = Object.freeze(['zh-CN', 'zh-TW', 'en', 'ja', 'ko', 'ru', 'es', 'pt']);
+    const SUPPORTED_LOCALES = Object.freeze(['zh-CN', 'zh-TW', 'en', 'ja', 'ko', 'ru', 'es', 'pt', 'fa']);
     const SEQUENCE_MARKERS = /^(?:随后|然后|接着|紧接着|随即|接下来|而后|then|next|afterward)$/iu;
     const PARALLEL_MARKERS = /^(?:同时|与此同时|一边|并且|and|while)$/iu;
     const CLAUSE_BOUNDARY = /([，,。.!?！？；;、\n]+|随后|然后|接着|紧接着|随即|接下来|而后|与此同时|同时|并且|一边|但是|不过|而是|ずに|ないで|then|next|afterward|however|\bbut\b|\band\b|while)/giu;

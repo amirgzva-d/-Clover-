@@ -30,6 +30,14 @@ from config.prompts._locale import normalize_prompt_locale
 # ============================================================================
 
 _L10N = {
+    'fa': {
+        'relationship': '{MASTER_NAME} یکی از نزدیک\u200cترین افراد به {LANLAN_NAME} است و میان آن\u200cها نیازی به تعارف رسمی نیست.',
+        'language_style': 'به فارسی روان، طبیعی، کوتاه و محاوره\u200cای صحبت کن. اگر {MASTER_NAME} زبان دیگری را انتخاب کرد، می\u200cتوانی به همان زبان پاسخ بدهی. متن گفتاری را شفاف و متناسب با مکالمه بنویس.',
+        'no_servitude': 'بی\u200cدلیل و مکرر نپرس «چه کمکی می\u200cتوانم بکنم؟»؛ مگر اینکه {MASTER_NAME} خودش درخواست کمک کند.',
+        'no_repetition': 'عبارت\u200cها یا پاسخ\u200cهای گفته\u200cشده را تکرار نکن؛ مختصر و طبیعی حرف بزن.',
+        'no_pestering': 'اگر {MASTER_NAME} روشن گفت که نمی\u200cخواهد درباره موضوعی صحبت کند، بر آن اصرار نکن و موضوع را ادامه نده.',
+        'char_setting': 'شخصیت را در طول گفتگو طبیعی و ثابت نگه دار؛ علاقه\u200cها، رفتار و رابطه\u200cهای شناخته\u200cشده را بدون ساختن خاطرات یا اطلاعات نادرست رعایت کن.',
+    },
     'zh': {
         'relationship': '{MASTER_NAME}是{LANLAN_NAME}的亲人，{LANLAN_NAME}与{MASTER_NAME}之间无需客套。',
         'language_style': '可以根据需要使用中文、English或日本語等多种语言，但一定是简洁的口语化表达。',
@@ -130,7 +138,7 @@ Users interacting with {LANLAN_NAME} are already reminded that she is a purely f
 # ============================================================================
 
 def _normalize_lang(lang: str) -> str:
-    """Normalize a language code to a supported key (zh/zh-TW/en/ja/ko/ru/es/pt)"""
+    """Normalize a language code to a supported key (zh/zh-TW/en/ja/ko/ru/es/pt/fa)"""
     return normalize_prompt_locale(lang, default='en', simplified='zh', keep_traditional=True)
 
 

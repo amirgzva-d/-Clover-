@@ -1,0 +1,5 @@
+html[lang='fa'] :is(input[type='url'], input[type='email'], input[type='number'],
+input[type='password'], pre, code, .monaco-editor, .cm-editor) {
+  direction: ltr; text-align: left; unicode-bidi: isolate;
+}
+html[lang='fa'] :is(.el-input__inner, .el-textarea__inner) { text-align: start; }
