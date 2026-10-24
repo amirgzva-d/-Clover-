@@ -130,7 +130,7 @@ RPS_UI_KEYS = (
     "chat.avatarToolRpsRoundAnnouncement",
 )
 RPS_LOCALE_FILES = {
-    "en.json", "es.json", "ja.json", "ko.json",
+    "en.json", "es.json", "ja.json", "ko.json", "fa.json",
     "pt.json", "ru.json", "zh-CN.json", "zh-TW.json",
 }
 RPS_ANNOUNCEMENT_KEY = "chat.avatarToolRpsRoundAnnouncement"

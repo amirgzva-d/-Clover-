@@ -28,7 +28,6 @@
     // 支持的语言列表
     const SUPPORTED_LANGUAGES = ['zh-CN', 'zh-TW', 'en', 'ja', 'ko', 'ru', 'es', 'pt', 'fa'];
     // Clover default applies only without an explicit UI preference.
-    const DEFAULT_UI_LANGUAGE = 'fa';
 
     // locale 资源版本（用于 cache-busting，避免客户端长期缓存旧语言包导致新增 key 不生效）
     // Molili 归档导入（PR #3447）新增角色名超长提示文案，刷新八语言客户端缓存。
@@ -364,17 +363,6 @@
         return 'zh-CN';
     }
 
-    // Only the interface defaults to Persian; existing conversation
-    // language fallback must keep using the actual browser language.
-    function getCloverInitialUiLanguage() {
-        const queryLanguage = getLanguageFromQuery();
-        if (queryLanguage) return queryLanguage;
-        try {
-            const savedLanguage = localStorage.getItem('i18nextLng') || '';
-            if (SUPPORTED_LANGUAGES.includes(savedLanguage)) return savedLanguage;
-        } catch (_) { /* local storage may be blocked */ }
-        return DEFAULT_UI_LANGUAGE;
-    }
 
     // 从后端获取语言设置（异步）：同一请求携带手工 UI 覆盖和 Steam 语言
     async function getServerLanguagePreferences() {
@@ -418,6 +406,20 @@
 
     // 服务端 uiLanguage 强制覆盖；生效时本窗口不跟随其他窗口写入的 i18nextLng。
     let serverUiLanguageOverride = null;
+    const DEFAULT_UI_LANGUAGE = 'fa';
+
+    // Only the interface defaults to Persian; existing conversation
+    // language fallback must keep using the actual browser language.
+    function getCloverInitialUiLanguage() {
+        const queryLanguage = getLanguageFromQuery();
+        if (queryLanguage) return queryLanguage;
+        try {
+            const savedLanguage = localStorage.getItem('i18nextLng') || '';
+            if (SUPPORTED_LANGUAGES.includes(savedLanguage)) return savedLanguage;
+        } catch (_) { /* local storage may be blocked */ }
+        return DEFAULT_UI_LANGUAGE;
+    }
+
 
     // Initial UI language: explicit server override > URL > saved selection > Clover Persian default.
     async function getInitialLanguage() {
