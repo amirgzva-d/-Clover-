@@ -134,6 +134,21 @@ export function initializeLocale(): Promise<boolean> | undefined {
 export function setLocale(setting: LocaleSetting): Promise<boolean> {
   return applySetting(setting, true)
 }
+
+// Main N.E.K.O settings change localStorage.locale in another same-origin
+// window. Follow that explicit choice; keep the Vue layout/components intact.
+if (typeof window !== 'undefined') {
+  window.addEventListener('storage', (event: StorageEvent) => {
+    if (event.key !== 'locale' || !event.newValue) return
+    const setting = event.newValue
+    if (
+      setting !== 'auto'
+      && !SUPPORTED_LOCALES.includes(setting as AppLocale)
+    ) return
+    if (setting === appliedSetting.value) return
+    void applySetting(setting as LocaleSetting, false)
+  })
+}
 export function retryLocale(): Promise<boolean> {
   return localeLoadState.failedSetting === null
     ? Promise.resolve(false)

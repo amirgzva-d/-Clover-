@@ -131,6 +131,7 @@ class OmniRealtimeClient(_ToolingMixin, _AudioMixin, _TransportMixin, _ResponseM
         livestream_mode: bool = False,
         noise_reduction_enabled: bool = True,
         turn_admission_lock: Optional[asyncio.Lock] = None,
+        conversation_language: Optional[str] = None,
     ):
         self.base_url = base_url
         self.api_key = api_key
@@ -179,6 +180,8 @@ class OmniRealtimeClient(_ToolingMixin, _AudioMixin, _TransportMixin, _ResponseM
         self.on_repetition_detected = on_repetition_detected
         self.get_host_turn_id = get_host_turn_id
         self.lanlan_name = lanlan_name
+        # Per-character language; do not change global locale for other sessions.
+        self.conversation_language = conversation_language
         self.extra_event_handlers = extra_event_handlers or {}
         self._bg_tasks: set = set()  # Retain fire-and-forget tasks against garbage collection
         # Tool handlers have narrower ownership than generic background work:

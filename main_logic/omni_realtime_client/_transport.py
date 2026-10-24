@@ -787,7 +787,9 @@ class _TransportMixin:
             # retaining automatic detection / voice_label semantics.
             if 'lanlan.app' in (self.base_url or ''):
                 from utils.language_utils import get_tts_language_code
-                free_session["language_code"] = get_tts_language_code()
+                free_session["language_code"] = get_tts_language_code(
+                    getattr(self, "conversation_language", None)
+                )
             free_tools: List[Dict[str, Any]] = []
             if self.has_tools():
                 free_tools.extend(self._tools_for_step())

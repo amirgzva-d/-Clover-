@@ -987,6 +987,107 @@
             return i18next.changeLanguage(lng);
         };
 
+        // The interface locale and character conversation locale are different
+        // pieces of state. Update both only after the source backend confirms
+        // that it supports the selected language. This is the same native menu,
+        // not another window or replacement UI.
+        let unifiedLanguageBusy = false;
+        async function fetchCloverMutationHeaders(refresh) {
+            const security = window.nekoLocalMutationSecurity;
+            if (security && typeof security.getMutationHeaders === 'function') {
+                if (refresh && typeof security.refreshToken === 'function') {
+                    await security.refreshToken();
+                }
+                const headers = await security.getMutationHeaders();
+                if (headers && headers['X-CSRF-Token']) return headers;
+            }
+            const result = await fetch('/api/config/page_config', { cache: 'no-store' });
+            if (!result.ok) throw new Error('Language switch token unavailable');
+            const json = await result.json();
+            if (!json.autostart_csrf_token) throw new Error('Language switch token unavailable');
+            return { 'X-CSRF-Token': json.autostart_csrf_token };
+        }
+
+        async function persistUnifiedConversationLanguage(name, lng) {
+            const url = '/api/characters/character/' + encodeURIComponent(name) + '/language-preference';
+            async function save(refresh) {
+                const tokenHeaders = await fetchCloverMutationHeaders(refresh);
+                return fetch(url, {
+                    method: 'PUT',
+                    headers: Object.assign({ 'Content-Type': 'application/json' }, tokenHeaders),
+                    body: JSON.stringify({ language: lng })
+                });
+            }
+            let response = await save(false);
+            let payload = await response.json().catch(() => ({}));
+            // Keep the project's existing single-retry CSRF convention.
+            if (response.status === 403 && payload.error_code === 'csrf_validation_failed') {
+                response = await save(true);
+                payload = await response.json().catch(() => ({}));
+            }
+            if (!response.ok || payload.success !== true) {
+                const error = new Error(payload.error || 'Conversation language was not accepted');
+                error.code = payload.error_code || (response.status === 400 ? 'unsupported_language' : 'language_update_failed');
+                error.status = response.status;
+                throw error;
+            }
+            return payload;
+        }
+
+        window.changeCloverLanguageEverywhere = async function (language, options = {}) {
+            const normalized = normalizeSupportedLanguageCode(language);
+            if (!normalized) throw new Error('Unsupported UI language');
+            if (unifiedLanguageBusy) throw new Error('Another language change is already in progress');
+            const name = resolveConversationLanguageCharacterName(options.characterName);
+            if (!name) throw new Error('Select an existing character before changing its conversation language');
+            unifiedLanguageBusy = true;
+            const previousUi = i18next.language;
+            try {
+                // Preflight translations before committing the durable server
+                // preference; a missing locale pack must not change the chat.
+                if (typeof i18next.loadLanguages === 'function') {
+                    await i18next.loadLanguages(normalized);
+                }
+                if (!i18next.hasResourceBundle(normalized, 'translation')) {
+                    throw new Error('The selected language pack could not be loaded');
+                }
+                const saved = await persistUnifiedConversationLanguage(name, normalized);
+                await i18next.changeLanguage(normalized);
+                if (typeof window.setConversationLanguagePreference === 'function') {
+                    window.setConversationLanguagePreference(normalized, name, {
+                        source: 'unified-language-selector'
+                    });
+                }
+                // Explicit choice only. Preserve original automatic locale
+                // behaviour for profiles that never made a selection.
+                try {
+                    localStorage.setItem('nekoManualUiLanguage', normalized);
+                    // The plugin manager is a separate Vue mount. It keeps
+                    // its own locale key; synchronize it without changing UI.
+                    localStorage.setItem('locale', normalized === 'en' ? 'en-US' : normalized);
+                } catch (_) {
+                    // The backend and live UI already agreed. Blocked browser
+                    // storage must not falsely roll back a committed language.
+                }
+                window.dispatchEvent(new CustomEvent('neko:unified-language-changed', {
+                    detail: { language: normalized, character_name: name }
+                }));
+                return { language: normalized, character_name: name, saved };
+            } catch (error) {
+                // Never change visible UI or local chat state when the backend
+                // rejects fa (as the old compiled v0.9.0.1 backend does).
+                if (i18next.language !== previousUi) {
+                    await i18next.changeLanguage(previousUi).catch(() => {});
+                }
+                window.dispatchEvent(new CustomEvent('neko:unified-language-failed', {
+                    detail: { language: normalized, error_code: error.code || 'unknown' }
+                }));
+                throw error;
+            } finally {
+                unifiedLanguageBusy = false;
+            }
+        };
+
         // 确保在 DOM 加载完成后更新文本
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', function () {

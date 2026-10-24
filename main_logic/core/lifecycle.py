@@ -2353,6 +2353,7 @@ class LifecycleMixin:
                 voice=self._resolve_realtime_voice(realtime_config),
                 # As above: character ownership for copied frames.
                 lanlan_name=self.lanlan_name,
+                conversation_language=self.user_language,
                 on_text_delta=self.handle_text_data,
                 on_audio_delta=self.handle_audio_data,
                 on_audio_done=self.handle_audio_done,
@@ -2687,6 +2688,7 @@ class LifecycleMixin:
                     # realtime sessions, so plugins cannot identify ownership without this name. Offline already
                     # supplied it, while realtime previously always used None.
                     lanlan_name=self.lanlan_name,
+                    conversation_language=self.user_language,
                     on_text_delta=self.handle_text_data,
                     on_audio_delta=self.handle_audio_data,
                     on_audio_done=self.handle_audio_done,

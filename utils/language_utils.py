@@ -1369,10 +1369,15 @@ TTS_LANGUAGE_CODE_MAP = {
 }
 
 
-def get_tts_language_code() -> str:
-    """Return the language_code required by lanlan.app for the current global language, defaulting to 'cmn-CN'."""
+def get_tts_language_code(language: Optional[str] = None) -> str:
+    """Map an explicitly selected conversation locale for Gemini-proxy TTS.
+
+    Without an explicit locale preserve the original global-language fallback.
+    An explicit language is session-scoped and must not mutate global language
+    shared with other characters.
+    """
     try:
-        lang = normalize_language_code(get_global_language_full(), format='full')
+        lang = normalize_language_code(language or get_global_language_full(), format='full')
     except Exception:
         lang = 'zh-CN'
     return TTS_LANGUAGE_CODE_MAP.get(lang, 'cmn-CN')

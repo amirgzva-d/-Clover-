@@ -462,6 +462,99 @@ function finalizePopupClosedState(popup) {
 /**
  * 创建设置弹窗内容（通用）
  */
+// This is an ordinary settings submenu built with the original popup
+// primitives; no separate application, additional window, or global CSS.
+function createUnifiedLanguageSidePanel(manager, prefix) {
+    const panel = manager._createSidePanelContainer({
+        alignItems: 'stretch', flexDirection: 'column', width: '190px'
+    });
+    panel.setAttribute('data-neko-sidepanel-type', 'ui-language');
+    panel.style.padding = '4px';
+    panel.style.gap = '1px';
+    panel.style.maxHeight = 'min(350px, calc(100vh - 24px))';
+    panel.style.overflowY = 'auto';
+    const options = window.NEKO_NATIVE_LANGUAGE_OPTIONS || [];
+    const rows = [];
+
+    function refresh() {
+        const current = window.i18n && window.i18n.language;
+        rows.forEach(row => {
+            const chosen = row.code === current;
+            row.entry.setAttribute('aria-pressed', String(chosen));
+            row.mark.textContent = chosen ? '\u2713' : '';
+        });
+    }
+
+    options.forEach(({ code, label }) => {
+        const row = document.createElement('div');
+        row.className = prefix + '-settings-menu-item';
+        row.dataset.nekoUiLanguage = code;
+        row.setAttribute('role', 'button');
+        row.tabIndex = 0;
+        Object.assign(row.style, {
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+            gap: '8px', padding: '7px 10px', borderRadius: '6px',
+            fontSize: '12px', cursor: 'pointer', userSelect: 'none',
+            width: '100%', boxSizing: 'border-box'
+        });
+        const caption = document.createElement('span');
+        caption.textContent = label;
+        caption.lang = code;
+        const mark = document.createElement('span');
+        mark.setAttribute('aria-hidden', 'true');
+        row.append(caption, mark);
+        row.addEventListener('mouseenter', () => {
+            row.style.background = 'var(--neko-popup-hover, rgba(68,183,254,0.1))';
+        });
+        row.addEventListener('mouseleave', () => { row.style.background = 'transparent'; });
+
+        async function selectLanguage(event) {
+            event.stopPropagation();
+            if (row.dataset.busy === '1') return;
+            row.dataset.busy = '1';
+            row.setAttribute('aria-disabled', 'true');
+            try {
+                if (typeof window.changeCloverLanguageEverywhere !== 'function') {
+                    throw new Error('The current backend does not support synchronized languages');
+                }
+                await window.changeCloverLanguageEverywhere(code);
+                refresh();
+            } catch (error) {
+                console.warn('[Clover language switch] No partial change applied:', error);
+                refresh();
+                // Native alert is used for a failed operation instead of a
+                // new popup/toast/theme; the row must not silently be decorative.
+                if (typeof window.alert === 'function') {
+                    const failed = (window.i18n && window.i18n.language) === 'fa'
+                        ? 'زبان مکالمه یا صدا برای این نسخه پشتیبانی نمی‌شود.'
+                        : 'This language is not supported by the installed conversation backend.';
+                    window.alert(failed);
+                }
+            } finally {
+                row.dataset.busy = '0';
+                row.removeAttribute('aria-disabled');
+            }
+        }
+        row.addEventListener('click', selectLanguage);
+        row.addEventListener('keydown', event => {
+            if (event.key !== 'Enter' && event.key !== ' ') return;
+            event.preventDefault();
+            void selectLanguage(event);
+        });
+        panel.appendChild(row);
+        rows.push({ code, entry: row, mark });
+    });
+
+    const expand = panel._expand;
+    panel._expand = function () {
+        refresh();
+        return expand.call(this);
+    };
+    refresh();
+    document.body.appendChild(panel);
+    return panel;
+}
+
 function createSettingsPopupContent(manager, prefix, popup) {
     // 1. 对话设置按钮
     const chatSettingsBtn = manager._createSettingsMenuButton({
@@ -486,6 +579,18 @@ function createSettingsPopupContent(manager, prefix, popup) {
     animSidePanel._anchorElement = animSettingsBtn;
     animSidePanel._popupElement = popup;
     manager._attachSidePanelHover(animSettingsBtn, animSidePanel);
+
+    // Language selector uses the original settings-menu button and side panel.
+    const languageSettingsBtn = manager._createSettingsMenuButton({
+        id: 'ui-language',
+        label: window.t ? window.t('settings.menu.language') : 'Language',
+        labelKey: 'settings.menu.language'
+    });
+    popup.appendChild(languageSettingsBtn);
+    const languageSidePanel = createUnifiedLanguageSidePanel(manager, prefix);
+    languageSidePanel._anchorElement = languageSettingsBtn;
+    languageSidePanel._popupElement = popup;
+    manager._attachSidePanelHover(languageSettingsBtn, languageSidePanel);
 
     // 2.5 串门设置（docs/design/visit-infrastructure.md §5 PR-13）：入口默认隐藏，
     // static/visit/visit-settings.js 探到 NEKO_VISIT_ENABLED 总闸开着才显示
