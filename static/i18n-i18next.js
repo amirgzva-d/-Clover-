@@ -32,7 +32,7 @@
 
     // locale 资源版本（用于 cache-busting，避免客户端长期缓存旧语言包导致新增 key 不生效）
     // Molili 归档导入（PR #3447）新增角色名超长提示文案，刷新八语言客户端缓存。
-    const LOCALE_VERSION = '2026-10-21-clover-fa-default-v2';
+    const LOCALE_VERSION = '2026-10-24-clover-fa-default-v3';
     // Keep URLs, source code, and numerical IDs readable in Farsi.
     if (!document.getElementById('neko-fa-text-direction')) {
         const style = document.createElement('style');
@@ -354,8 +354,25 @@
             return savedLanguage;
         }
 
-        // Fresh Clover installations default to Persian rather than
-        // silently inheriting the browser/system/Steam language.
+        // Browser language remains available for conversation language preferences
+        // independently of Clover's initial interface language.
+        const browserLanguage = navigator.language || navigator.userLanguage;
+        if (browserLanguage) {
+            const normalized = normalizeSupportedLanguageCode(browserLanguage);
+            if (normalized) return normalized;
+        }
+        return 'zh-CN';
+    }
+
+    // Only the interface defaults to Persian; existing conversation
+    // language fallback must keep using the actual browser language.
+    function getCloverInitialUiLanguage() {
+        const queryLanguage = getLanguageFromQuery();
+        if (queryLanguage) return queryLanguage;
+        try {
+            const savedLanguage = localStorage.getItem('i18nextLng') || '';
+            if (SUPPORTED_LANGUAGES.includes(savedLanguage)) return savedLanguage;
+        } catch (_) { /* local storage may be blocked */ }
         return DEFAULT_UI_LANGUAGE;
     }
 
@@ -419,11 +436,11 @@
         // Steam and the browser are automatic signals, not explicit UI choices.
         // Do not override the Clover Persian default with either of them.
         // Existing manual choices in i18nextLng remain respected.
-        return getBrowserLanguage();
+        return getCloverInitialUiLanguage();
     }
 
     // 先使用同步方式获取初始语言（用于快速显示）
-    let INITIAL_LANGUAGE = getBrowserLanguage();
+    let INITIAL_LANGUAGE = getCloverInitialUiLanguage();
     // Apply initial direction immediately, before asynchronous translations.
     document.documentElement.lang = INITIAL_LANGUAGE;
     document.documentElement.dir = INITIAL_LANGUAGE === 'fa' ? 'rtl' : 'ltr';

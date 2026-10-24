@@ -20,7 +20,7 @@ from tests.node_harness import run_node_script
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
-SUPPORTED_LOCALES = {"zh-CN", "zh-TW", "en", "ja", "ko", "ru", "es", "pt"}
+SUPPORTED_LOCALES = {"zh-CN", "zh-TW", "en", "ja", "ko", "ru", "es", "pt", "fa"}
 HYDRATION_START_ANCHOR = "function hydrateConversationLanguage(characterName)"
 HYDRATION_END_ANCHOR = "// Upper bound for the settings-sync gate below"
 LANGUAGE_LISTENERS_START_ANCHOR = (
@@ -218,6 +218,7 @@ def test_language_preference_copy_exists_in_all_supported_locales():
     }
     expected_labels = {
         "en": "Language Preference",
+        "fa": '\u062a\u0631\u062c\u06cc\u062d \u0632\u0628\u0627\u0646',
         "es": "Preferencia de idioma",
         "ja": "言語の好み",
         "ko": "언어 선호",

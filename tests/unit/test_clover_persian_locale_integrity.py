@@ -126,3 +126,19 @@ def test_gemini_tts_has_native_persian_speech_prompt():
     assert "سلام، خوبی؟" in fa
     assert "Iranian Persian" not in en
     assert "Hello there" in en
+
+
+
+def test_clover_ui_default_preserves_browser_conversation_language():
+    js = (ROOT / "static/i18n-i18next.js").read_text(encoding="utf8")
+    browser = js.split("function getBrowserLanguage() {", 1)[1].split(
+        "function getCloverInitialUiLanguage()", 1
+    )[0]
+    assert "navigator.language || navigator.userLanguage" in browser
+    assert "return 'zh-CN'" in browser
+    ui = js.split("function getCloverInitialUiLanguage() {", 1)[1].split(
+        "async function getServerLanguagePreferences()", 1
+    )[0]
+    assert "return DEFAULT_UI_LANGUAGE;" in ui
+    assert "navigator.language" not in ui
+    assert "let INITIAL_LANGUAGE = getCloverInitialUiLanguage();" in js
