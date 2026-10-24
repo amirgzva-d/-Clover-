@@ -37,6 +37,7 @@ function normalizeLanguageCode(lang) {
     if (value.indexOf('ru') === 0) return 'ru';
     if (value.indexOf('es') === 0) return 'es';
     if (value.indexOf('pt') === 0) return 'pt';
+    if (value.indexOf('fa') === 0 || value === 'farsi' || value === 'persian') return 'fa';
     return 'zh';
 }
 

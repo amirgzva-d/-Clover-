@@ -724,14 +724,15 @@ TRANSLATION_REQUIREMENTS = {
 # to translate into Chinese, not a separate traditional-Chinese target. Missing inner zh-TW is intentional,
 # recorded individually with noqa; only outer tables need zh-TW rows.
 TRANSLATION_LANG_NAMES = {
-    'zh': {'zh': '中文', 'en': '英文', 'ja': '日语', 'ko': '韩语', 'ru': '俄语', 'es': '西班牙语', 'pt': '葡萄牙语'},  # noqa: PROMPT_ZH_TW  # Inner keys belong to the translation-target domain.
-    'zh-TW': {'zh': '中文', 'en': '英文', 'ja': '日文', 'ko': '韓文', 'ru': '俄文', 'es': '西班牙文', 'pt': '葡萄牙文'},  # noqa: PROMPT_ZH_TW  # Inner keys belong to the translation-target domain.
-    'en': {'zh': 'Chinese', 'en': 'English', 'ja': 'Japanese', 'ko': 'Korean', 'ru': 'Russian', 'es': 'Spanish', 'pt': 'Portuguese'},  # noqa: PROMPT_ZH_TW  # Inner keys belong to the translation-target domain.
-    'ja': {'zh': '中国語', 'en': '英語', 'ja': '日本語', 'ko': '韓国語', 'ru': 'ロシア語', 'es': 'スペイン語', 'pt': 'ポルトガル語'},  # noqa: PROMPT_ZH_TW  # Inner keys belong to the translation-target domain.
-    'ko': {'zh': '중국어', 'en': '영어', 'ja': '일본어', 'ko': '한국어', 'ru': '러시아어', 'es': '스페인어', 'pt': '포르투갈어'},  # noqa: PROMPT_ZH_TW  # Inner keys belong to the translation-target domain.
-    'ru': {'zh': 'китайский', 'en': 'английский', 'ja': 'японский', 'ko': 'корейский', 'ru': 'русский', 'es': 'испанский', 'pt': 'португальский'},  # noqa: PROMPT_ZH_TW  # Inner keys belong to the translation-target domain.
-    'es': {'zh': 'chino', 'en': 'inglés', 'ja': 'japonés', 'ko': 'coreano', 'ru': 'ruso', 'es': 'español', 'pt': 'portugués'},  # noqa: PROMPT_ZH_TW  # Inner keys belong to the translation-target domain.
-    'pt': {'zh': 'chinês', 'en': 'inglês', 'ja': 'japonês', 'ko': 'coreano', 'ru': 'russo', 'es': 'espanhol', 'pt': 'português'},  # noqa: PROMPT_ZH_TW  # Inner keys belong to the translation-target domain.
+    'zh': {'zh': '中文', 'en': '英文', 'ja': '日语', 'ko': '韩语', 'ru': '俄语', 'es': '西班牙语', 'pt': '葡萄牙语', 'fa': '波斯语'},  # noqa: PROMPT_ZH_TW  # Inner keys belong to the translation-target domain.
+    'zh-TW': {'zh': '中文', 'en': '英文', 'ja': '日文', 'ko': '韓文', 'ru': '俄文', 'es': '西班牙文', 'pt': '葡萄牙文', 'fa': '波斯語'},  # noqa: PROMPT_ZH_TW  # Inner keys belong to the translation-target domain.
+    'en': {'zh': 'Chinese', 'en': 'English', 'ja': 'Japanese', 'ko': 'Korean', 'ru': 'Russian', 'es': 'Spanish', 'pt': 'Portuguese', 'fa': 'Persian'},  # noqa: PROMPT_ZH_TW  # Inner keys belong to the translation-target domain.
+    'ja': {'zh': '中国語', 'en': '英語', 'ja': '日本語', 'ko': '韓国語', 'ru': 'ロシア語', 'es': 'スペイン語', 'pt': 'ポルトガル語', 'fa': 'ペルシア語'},  # noqa: PROMPT_ZH_TW  # Inner keys belong to the translation-target domain.
+    'ko': {'zh': '중국어', 'en': '영어', 'ja': '일본어', 'ko': '한국어', 'ru': '러시아어', 'es': '스페인어', 'pt': '포르투갈어', 'fa': '페르시아어'},  # noqa: PROMPT_ZH_TW  # Inner keys belong to the translation-target domain.
+    'ru': {'zh': 'китайский', 'en': 'английский', 'ja': 'японский', 'ko': 'корейский', 'ru': 'русский', 'es': 'испанский', 'pt': 'португальский', 'fa': 'персидский'},  # noqa: PROMPT_ZH_TW  # Inner keys belong to the translation-target domain.
+    'es': {'zh': 'chino', 'en': 'inglés', 'ja': 'japonés', 'ko': 'coreano', 'ru': 'ruso', 'es': 'español', 'pt': 'portugués', 'fa': 'persa'},  # noqa: PROMPT_ZH_TW  # Inner keys belong to the translation-target domain.
+    'pt': {'zh': 'chinês', 'en': 'inglês', 'ja': 'japonês', 'ko': 'coreano', 'ru': 'russo', 'es': 'espanhol', 'pt': 'português', 'fa': 'persa'},  # noqa: PROMPT_ZH_TW  # Inner keys belong to the translation-target domain.
+    'fa': {'zh': 'چینی', 'en': 'انگلیسی', 'ja': 'ژاپنی', 'ko': 'کره‌ای', 'ru': 'روسی', 'es': 'اسپانیایی', 'pt': 'پرتغالی', 'fa': 'فارسی'},
 }
 
 # -- Conversation memo injection into LLM context --

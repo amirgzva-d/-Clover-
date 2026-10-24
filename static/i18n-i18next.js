@@ -1053,6 +1053,17 @@
                 }
                 const saved = await persistUnifiedConversationLanguage(name, normalized);
                 await i18next.changeLanguage(normalized);
+                // Subtitle translation has its own target-language preference.
+                // Match it to the selected conversation/UI language only after
+                // the backend confirms the choice. Keep existing subtitle UI.
+                try {
+                    if (window.subtitleBridge
+                            && typeof window.subtitleBridge.setUserLanguage === 'function') {
+                        window.subtitleBridge.setUserLanguage(normalized);
+                    }
+                } catch (subtitleError) {
+                    console.warn('[i18n] Subtitle target-language sync failed:', subtitleError);
+                }
                 if (typeof window.setConversationLanguagePreference === 'function') {
                     window.setConversationLanguagePreference(normalized, name, {
                         source: 'unified-language-selector'

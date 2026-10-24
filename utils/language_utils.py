@@ -1312,6 +1312,16 @@ JAPANESE_PATTERN = re.compile(r'[\u3040-\u309f\u30a0-\u30ff\u4e00-\u9fff]')  # H
 ENGLISH_PATTERN = re.compile(r'[a-zA-Z]')
 KOREAN_PATTERN = re.compile(r'[\u1100-\u11ff\u3130-\u318f\uac00-\ud7af]')  # Hangul.
 RUSSIAN_PATTERN = re.compile(r'[\u0400-\u04ff]')  # Cyrillic, Russian.
+# Persian uses Arabic script. Only distinctive Iranian characters or
+# characteristic Persian words enable this detection; do not label arbitrary
+# Arabic or Urdu text as Persian.
+PERSIAN_SCRIPT_PATTERN = re.compile(r'[\u0600-\u06ff]')
+PERSIAN_DISTINCTIVE_PATTERN = re.compile(r'[\u067e\u0686\u0698\u06af\u06cc\u06a9]')
+PERSIAN_WORD_PATTERN = re.compile(
+    r'(?<![\u0600-\u06ff])(?:سلام|خوبی|لطفا|لطفاً|هستم|هستی|هستید|'
+    r'چطور|چگونه|ممنون|فارسی|ایران|تهران|بله|خیر|شما|کتاب|'
+    r'می[\u200c ]?توانم|دوست)(?![\u0600-\u06ff])'
+)
 # Distinctive Spanish/Portuguese characters.
 # Spanish/Portuguese share Latin scripts and cannot be distinguished precisely by charset alone.
 # Recognize only strong indicators, es: ñ ¡ ¿; pt: ã õ. Otherwise return en/unknown,
@@ -1618,6 +1628,11 @@ def detect_language(text: str) -> str:
     korean_count = len(KOREAN_PATTERN.findall(text))
     english_count = len(ENGLISH_PATTERN.findall(text))
     russian_count = len(RUSSIAN_PATTERN.findall(text))
+    persian_count = len(PERSIAN_SCRIPT_PATTERN.findall(text))
+    persian_evidence = (
+        PERSIAN_DISTINCTIVE_PATTERN.search(text) is not None
+        or PERSIAN_WORD_PATTERN.search(text) is not None
+    )
     spanish_strong = SPANISH_STRONG_PATTERN.search(text) is not None
     portuguese_strong = PORTUGUESE_STRONG_PATTERN.search(text) is not None
 
@@ -1632,6 +1647,9 @@ def detect_language(text: str) -> str:
         return 'ko'
     if russian_count >= chinese_count and russian_count >= english_count and russian_count > 0:
         return 'ru'
+    if (persian_evidence and persian_count > 0
+            and persian_count >= max(chinese_count, english_count, russian_count)):
+        return 'fa'
     # Spanish/Portuguese require strong indicator characters, avoiding false English/French matches.
     if portuguese_strong and english_count > 0:
         return 'pt'
@@ -1838,6 +1856,7 @@ async def translate_text(text: str, target_lang: str, source_lang: Optional[str]
         'ru': 'ru',
         'es': 'es',
         'pt': 'pt',
+        'fa': 'fa',
     }
     
     google_target = GOOGLE_LANG_MAP.get(target_lang, target_lang)

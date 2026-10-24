@@ -136,6 +136,7 @@
         if (value.indexOf('ru') === 0) return 'ru';
         if (value.indexOf('es') === 0) return 'es';
         if (value.indexOf('pt') === 0) return 'pt';
+        if (value.indexOf('fa') === 0 || value === 'persian' || value === 'farsi') return 'fa';
         return 'zh';
     }
 
@@ -154,6 +155,7 @@
         if (lower.indexOf('ru') === 0) return 'ru';
         if (lower.indexOf('es') === 0) return 'es';
         if (lower.indexOf('pt') === 0) return 'pt';
+        if (lower.indexOf('fa') === 0) return 'fa';
         if (lower.indexOf('en') === 0) return 'en';
         return DEFAULT_UI_LOCALE;
     }
